@@ -5,50 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Matches</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .school-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e3e3e3;
+        }
+
+        .school-title {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .school-info {
+            margin: 6px 0;
+            font-size: 15px;
+            color: #444;
+        }
+
+        .btn-info {
+            margin-top: 10px;
+            padding: 10px 18px;
+            background: #3d6af2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal-content {
+            background: white;
+            padding: 25px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        #close-btn {
+            background: #ff4444;
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            float: right;
+            cursor: pointer;
+        }
+        .btn-back {
+            background: #6a5af9;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.2s ease;
+        }
+
+        .btn-back:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <header class="navbar">
-        <div class="nav-left">
-            <img src="assets/unext_logo.png" class="logo-img">
-            <h2 class="site-title">College Match AI</h2>
-        </div>
-    </header>
-
-    <div class="container">
-        <h1>Your Top Matches</h1>
-        <div id="results"></div>
+<header class="navbar">
+    <div class="nav-left">
+        <img src="assets/unext_logo.png" class="logo-img">
+        <h2 class="site-title">UNext</h2>
     </div>
+</header>
 
-    <script>
-        const resultsDiv = document.getElementById("results");
-        const stored = JSON.parse(localStorage.getItem("recommendations"));
+<div class="container">
+    <h1>Your Top Matches</h1>
+    <div id="results"></div>
+</div>
 
-        if (!stored || !stored.recommendations) {
-            resultsDiv.innerHTML = "<p>No recommendations found.</p>";
-        } else {
-            stored.recommendations.forEach(school => {
-                const card = document.createElement("div");
-                card.className = "school-card";
+<!-- Modal -->
+<div id="modal">
+    <div id="modal-content">
+        <button id="close-btn">Close</button>
+        <h3 id="modal-title"></h3>
+        <p id="modal-text"></p>
+    </div>
+</div>
 
-                card.innerHTML = `
-                    <h3>${school.name}</h3>
-                    <p>Score: ${school.score}</p>
-                    <button class="btn why-btn">
-                        Why this school?
-                    </button>
-                `;
+<button id="back-btn" class="btn-back">← Back</button>
 
-                card.querySelector(".why-btn").addEventListener("click", () => {
-                    alert(school.explanation.replace(/'/g, ""));
-                });
+<script>
+    const resultsDiv = document.getElementById("results");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalText = document.getElementById("modal-text");
+    const closeBtn = document.getElementById("close-btn");
 
-                resultsDiv.appendChild(card);
+    const stored = JSON.parse(localStorage.getItem("recommendations"));
+
+    if (!stored || stored.length === 0) {
+        resultsDiv.innerHTML = "<p>No recommendations found.</p>";
+    } else {
+        stored.forEach(school => {
+            const card = document.createElement("div");
+            card.className = "school-card";
+
+            card.innerHTML = `
+                <h3 class="school-title">${school["Institution Name"]}</h3>
+                <p class="school-info"><strong>Match Score:</strong> ${school.match_score.toFixed(1)}</p>
+                <p class="school-info"><strong>Net Price:</strong> $${school["Net Price"]}</p>
+                <p class="school-info"><strong>Distance:</strong> ${school.distance_km.toFixed(1)} km</p>
+                <button class="btn-info">Why this school?</button>
+            `;
+
+            card.querySelector(".btn-info").addEventListener("click", () => {
+                modalTitle.textContent = school["Institution Name"];
+                modalText.textContent = school.rationale;
+                modal.style.display = "flex";
             });
-        }
-    </script>
 
+            resultsDiv.appendChild(card);
+        });
+    }
+
+    closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+    });
+    document.getElementById("back-btn").addEventListener("click", () => {
+        window.location.href = "index.html";
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </body>
 </html>

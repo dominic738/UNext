@@ -3,28 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Match AI</title>
+    <title>UNext</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 
 <body>
 
-    <!-- HEADER -->
+
     <header class="navbar">
         <div class="nav-left">
             <img src="assets/unext_logo.png" class="logo-img">
-            <h2 class="site-title">College Match AI</h2>
+            <h2 class="site-title">UNext</h2>
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
+
     <div class="container">
-        <h1>College Match AI</h1>
-        <p>Find colleges that match your background and goals.</p>
-
+        <div class="hero">
+            <img src="assets/unext_logo.png" class="hero-logo">
+            <h1>UNext: Equitable College Finder</h1>
+            <p>Personalized, data-driven college recommendations grounded in affordability and equity.</p>
+        </div>
         <form id="studentForm">
-
-            <!-- FINANCIAL SECTION -->
+         
             <h3>💰 Financial Info</h3>
 
             <label>Family Income ($)</label>
@@ -33,15 +36,25 @@
             <label>Target Net Price ($)</label>
             <input type="number" id="target_net_price" placeholder="15000" required>
 
-            <label>Max Work Hours / Week</label>
+            <label>Max Work Hours / Week You Can Working During The School Year</label>
             <input type="number" id="max_work_hours" placeholder="15" required>
 
 
-            <!-- PERSONAL BACKGROUND -->
+           
             <h3>🧬 Personal Background</h3>
 
-            <label>Ethnicity</label>
-            <input type="text" id="self_ethnicity" placeholder="Asian, Black, Latino..." required>
+            <label>Race</label>
+            <select id="self_race" required>
+                <option value="">Select your background</option>
+                <option value="Latino">Latino / Hispanic</option>
+                <option value="Black">Black / African American</option>
+                <option value="Asian">Asian / Pacific Islander</option>
+                <option value="White">White</option>
+                <option value="Native American">Native American</option>
+                <option value="Middle Eastern">Middle Eastern / North African</option>
+                <option value="Multiracial">Two or More Races</option>
+                <option value="Other">Other</option>
+            </select>
 
             <label>Willing to Work a Job?</label>
             <select id="will_work_job">
@@ -50,30 +63,40 @@
             </select>
 
 
-            <!-- LOCATION -->
-            <h3>📍 Location</h3>
-
-            <label>Home Latitude</label>
-            <input type="number" step="0.0001" id="home_lat" placeholder="34.05">
-
-            <label>Home Longitude</label>
-            <input type="number" step="0.0001" id="home_lon" placeholder="-118.25">
+ 
 
 
-            <!-- ACADEMICS -->
+            <h3>📍 Choose Your Location</h3>
+            <div id="map" style="height: 300px; border-radius: 12px; margin-bottom: 15px;"></div>
+
+            <input type="number" id="home_lat" placeholder="Latitude" readonly>
+            <input type="number" id="home_lon" placeholder="Longitude" readonly>
+        
+
+
+          
             <h3>🎓 Academics</h3>
 
             <label>SAT Score</label>
-            <input type="number" id="sat_score" placeholder="1200">
+            <input type="number" id="sat_score" placeholder="E.g. 1200 (Optional)">
 
             <label>ACT Score</label>
-            <input type="number" id="act_score" placeholder="Optional">
+            <input type="number" id="act_score" placeholder="E.g. 28 (Optional)">
 
             <label>Intended Major</label>
-            <input type="text" id="intended_major" placeholder="stem, business, arts..." required>
+            <select id="intended_major" required>
+                <option value="">Select a major area</option>
+
+                <option value="stem">STEM (Science, Tech, Engineering, Math)</option>
+                <option value="business">Business / Economics</option>
+                <option value="health">Health Sciences / Nursing</option>
+                <option value="arts">Arts & Humanities</option>
+                <option value="education">Education</option>
+                <option value="social science">Social Sciences / Psychology / Sociology</option>
+            </select>
 
 
-            <!-- COLLEGE TYPE PREFERENCES -->
+       
             <h3>🏫 College Preferences</h3>
 
             <label>Preferred Sector</label>
@@ -92,7 +115,7 @@
             </select>
 
 
-            <!-- IMPORTANCE SLIDERS -->
+          
             <h3>📊 What Matters Most?</h3>
 
             <label>Affordability Importance</label>
@@ -107,7 +130,7 @@
             <label>Upward Mobility Importance</label>
             <input type="range" id="importance_mobility" min="0" max="1" step="0.1" value="0.8">
 
-            <label>Location Importance</label>
+            <label>Location Importance (Distance To Home)</label>
             <input type="range" id="importance_location" min="0" max="1" step="0.1" value="0.5">
 
 
@@ -115,6 +138,12 @@
         </form>
     </div>
 
+    <div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>Finding your best matches...</p>
+    </div>
+
     <script src="script.js"></script>
+
 </body>
 </html>
