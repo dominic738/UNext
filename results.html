@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Matches</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="navbar">
+        <div class="nav-left">
+            <img src="assets/unext_logo.png" class="logo-img">
+            <h2 class="site-title">College Match AI</h2>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Your Top Matches</h1>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById("results");
+        const stored = JSON.parse(localStorage.getItem("recommendations"));
+
+        if (!stored || !stored.recommendations) {
+            resultsDiv.innerHTML = "<p>No recommendations found.</p>";
+        } else {
+            stored.recommendations.forEach(school => {
+                const card = document.createElement("div");
+                card.className = "school-card";
+
+                card.innerHTML = `
+                    <h3>${school.name}</h3>
+                    <p>Score: ${school.score}</p>
+                    <button class="btn why-btn">
+                        Why this school?
+                    </button>
+                `;
+
+                card.querySelector(".why-btn").addEventListener("click", () => {
+                    alert(school.explanation.replace(/'/g, ""));
+                });
+
+                resultsDiv.appendChild(card);
+            });
+        }
+    </script>
+
+</body>
+</html>
